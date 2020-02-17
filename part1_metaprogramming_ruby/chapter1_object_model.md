@@ -1,3 +1,5 @@
+# Điều gì xảy ra khi bạn gọi một method?
+
 Khi bạn gọi một method, Ruby thực hiện 2 việc:
 1. Tìm kiếm method được gọi (method lookup)
 2. Thực thi method đó
@@ -28,7 +30,7 @@ obj.my_method
 
 Chúng ta có thể tưởng tượng sơ đồ tìm kiếm `my_method` như sau:
 
-![find_my_object](images/find_my_method.jpg)
+![find_my_object](/images/find_my_method.jpg)
 
 Khi bạn gọi `obj.my_method`, Ruby sẽ đi vào class của receiver (là `obj`) chính là `MySubclass`và không tìm thấy `my_method` ở đây, nó tiếp tục đi đến MyClass (trong ancestors chain) và tìm thấy `my_method`, việc tìm kiếm kết thúc.
 
@@ -51,7 +53,7 @@ Như vậy, với ancestors chain đã nêu trên, ta có thể biết rằng mo
 
 Từ Ruby 2.0, ta có 1 cách include module vào class khác là sử dụng `prepend`. Nó hoạt động tương tự `include`, tuy nhiên module sẽ được chèn vào bên trái của class trong ancestors chain. Ta có sơ đồ đơn giản như sau:
 
-![method_lookup_with_module](images/method_lookup_with_module.jpg)
+![method_lookup_with_module](/images/method_lookup_with_module.jpg)
 
 ### Multiple inclusions
 
@@ -130,3 +132,19 @@ self.class # => Object
 ```
 
 Ngay khi bạn start 1 chương trình Ruby, bạn sẽ được đứng trong một object tên là `main` mà Ruby tạo ra cho bạn; hoặc sau khi tất cả method mà bạn gọi đã returned, main sẽ trở thành self.
+
+## Tổng hợp
+
+* Một object chứa các instance variables và một link đến class của object đó.
+* Những methods của một object sống ở class của object đó.
+* Một class thực chất là một object của class `Class`. Tên của class thực chất chỉ là một hằng số.
+* `Class` thì lại là class con của `Module`. Một module là một package các methods cơ bản. Một class cũng có thể được khởi tạo (với `new`) hoặc được sắp xếp trong một hệ thống cấp bậc.
+* Các hằng số được sắp xếp trong một cây tương tự cây thư mục của hệ thống file. Tên của module hoặc class tương tự như thư mục, còn hằng số thì tương tự như file trong thư mục đó.
+* Mỗi class có một ancestors chain, bắt đầu với class đó và kết thúc là `BasicObject`.
+* Khi gọi một method, Ruby sẽ đi qua từng bậc trong ancestors chain của class của `receiver` cho đến khi tìm được method.
+* Khi include một module vào một class, module sẽ được insert vào ancestors chain của class đó, ngay phía sau class đó. Khi prepend thì ngược lại module sẽ được insert vào phía trước class đó trong ancestors chain.
+* Khi gọi một method, receiver sẽ đóng vai trò là self.
+* Khi đang define một module (hoặc class), module (hoặc class) đó sẽ đóng vai trò là self.
+* Các instance variables luôn được giả định là instance variables của self.
+* Bất kỳ một method nào được gọi mà không được chỉ định receiver rõ ràng thì sẽ được giả định là method của self.
+* `Refinements` giống như một đoạn code được chắp vá vào một class, và chúng ghi đè những phương thức tra cứu method thông thường. Nói cách khác, một `Refinement` làm việc trong một phạm vi nhất định của chương trình: những dòng code nằm giữa đoạn bắt đầu với `using` và kết thúc của file, hoặc kết thúc của module definition.
